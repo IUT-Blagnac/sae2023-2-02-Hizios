@@ -6,6 +6,9 @@ import exercice.Exercice;
 import java.util.*;
 
 public class ExerciceTest {
+    /**
+     * 
+     */
     @Test
     public void testSolution() {
         // Chaine simple avec ordre complet
@@ -13,9 +16,11 @@ public class ExerciceTest {
         // Chaine à 1 mot
         assertEquals("Erreur de chaine à 1 mot", List.of("OK"), Exercice.solution("OK",List.of('a', 'b', 'c', 'd', 'e')));
         // Chaine vide
-        assertEquals(List.of(""), Exercice.solution("",List.of('6', 't', 'n', 'o', 'b')));
+        assertEquals(List.of(), Exercice.solution("",List.of('6', 't', 'n', 'o', 'b')));
         // Chaine donnée en exemple
         assertEquals(List.of("fait", "Il", "aujourd", "aout", "beau", "hui", "comme", "en"), Exercice.solution("Il fait beau aujourd'hui comme en aout",List.of('f', 'I', 'z', 'u', 'k', 'a', 'b', 'o')));
-        // Ajoutez vos test ici...
+        // chaine avec des mots identiques
+        assertEquals(List.of("demain","aujourd","hui","il", "il", "imagine", "imagine", "pleut", "pleut"), Exercice.solution("imagine aujourd'hui il pleut, imagine demain il pleut",List.of('d','a','h','i','p')));
+
     }
 }
