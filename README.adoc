@@ -194,20 +194,17 @@ WARNING: Les répertoires et fichiers existants devront être complétés et mis
 
 Voici les pré-requis pour exécuter nos codes d'évaluation.
 
-- Java v.x.y.z
-- ...
+- Java 17
+- IDE Java
 
 === Reproductibilité
 
 - Pour reproduire nos analyses :
-. Installez X
-. Lancez Y
-. ...
+
 
 === Références
 
-- link:http://xyz[Mon super outil XYZ]
-- ...
+- link:https://app.codacy.com/
 
 == Généralités, notation de la SAÉ et résultat du concours
 
