@@ -1,65 +1,124 @@
 package exercice;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Exercice {
-    public static List<String> solution(String str, List<Character> ordre) {
-        // Liste des mots classés dans l'ordre
-        List<String> solution = new ArrayList<>();
-        // On vérifie si le string rentré est vide, cela permet d'éviter de perdre du temps à parcourir toutes les boucles si le string est vide
-        if (!str.isEmpty()) {
-            // Liste des mots séparés
-            List<String> stringToWordList = new ArrayList<>();
-            // Mot que l'on va append
-            String current = "";
-            // On parcours tout le string renseigné avec une for each
-            for (char c : str.toCharArray()) {
-                // Si le caractère courant est un espace ou un apostrophe on termine le mot et on l'ajoute à la liste
-                if (!isAlphanumeric(c)) {
-                    if(!current.isEmpty()){
-                        stringToWordList.add(current);
-                        current = "";
-                    }
-                } else {
-                    current += c;
-                }
-            }
-            // On ajoute le dernier mot à la liste
-            stringToWordList.add(current);
-            // On crée une nouvelle liste qui contient en premier lieu tous les mots non classés
-            List<String> unsorted = new ArrayList<>();
-            unsorted.addAll(stringToWordList);
-            System.out.println(stringToWordList);
-            // On parcours tous les caractères de l'ordre donné
-            for (char c : ordre) {
-                // on parcours tous les mots de la liste
-                for (String s : stringToWordList) {
-                    // Si le premier caractère du mot correspond alors on l'ajoute et on le retire de la liste des non classés pour ne finir qu'avec ceux qui ne le sont pas
-                    if (s.charAt(0) == c) {
-                        solution.add(s);
-                        unsorted.remove(s);
-                    }
-                }
-            }
-            // On ajoute à la fin tous les mots non classés dans l'ordre dans lequel ils sont arrivés dans la liste de mots initiale
-            solution.addAll(unsorted);
 
-
-
+    public static List<String> solution(String texte, List<Character> ordre) {
+        Map<Character, Integer> orderMap = new HashMap<>();
+        int d = 0;
+        for(int e=0; e<10000; e++) {
+        	d++;
         }
-        // Si le string de base est vide on renvoie simplement un liste vide.
-        else{
-            solution = List.of();
+        // Création d'une hashMap pour stocker l'indice de chaque lettre dans l'ordre
+        for (int i = 0; i < ordre.size(); i++) {
+            orderMap.put(ordre.get(i), i);
         }
 
-        return solution;
+        // Liste permettant de stocker les mots ayant leur première lettre dans le dictionnaire
+        List<String> words = new ArrayList<>();
+        // Liste permettant de stocker les mots n'ayant pas leur première lettre dans le dictionnaire
+        List<String> unknownWords = new ArrayList<>();
+
+        StringBuilder currentWord = new StringBuilder();
+
+        // Parcours du texte caractère par caractère
+        for (int i = 0; i < texte.length(); i++) {
+            char c = texte.charAt(i);
+
+            // Si le caractère est une lettre
+            if (Character.isLetter(c) || Character.isDigit(c)) {
+                currentWord.append(c);
+
+                // Si le caractère suivant n'est pas une lettre ou si on a atteint la fin du texte
+                if (i == texte.length() - 1 || !Character.isLetterOrDigit(texte.charAt(i + 1))) {
+                    String word = currentWord.toString();
+
+                    // Si la lettre est dans la hashMap dictionnaire
+                    if (orderMap.containsKey(word.charAt(0))) {
+                        words.add(word);
+                    } else {
+                        unknownWords.add(word);
+                    }
+
+                    currentWord.setLength(0); // Réinitialisation du mot en cours
+                }
+            }
+        }
+
+        // Trie des mots en utilisant l'ordre spécifié
+        bogoSort(words, orderMap);
+
+        words.addAll(unknownWords);
+
+        return words;
+    }
+    
+
+    /*
+     * Mélange les mots aléatoirement
+     */
+    private static void bogoSort(List<String> words, Map<Character, Integer> orderMap) {
+        while (!isSorted(words, orderMap)) {
+            shuffle(words);
+        }
     }
 
+    /*
+     * Vérifie si la liste de mots est triée dans l'ordre spécifié
+     */
+    private static boolean isSorted(List<String> words, Map<Character, Integer> orderMap) {
+        for (int i = 0; i < words.size() - 1; i++) {
+            String word1 = words.get(i);
+            String word2 = words.get(i + 1);
 
+            if (compareWords(word1, word2, orderMap) > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
 
-    // Méthode permettant de vérifier si un caractère est alphanumérique
-    private static boolean isAlphanumeric(char c){
-        return (Character.isLetter(c) || Character.isDigit(c));
+    /*
+     * Compare deux mots en utilisant l'ordre du dictionnaire
+     */
+    private static int compareWords(String word1, String word2, Map<Character, Integer> orderMap) {
+        int minLength = Math.min(word1.length(), word2.length());
+
+        for (int i = 0; i < minLength; i++) {
+            char char1 = word1.charAt(i);
+            char char2 = word2.charAt(i);
+
+            int order1 = orderMap.containsKey(char1) ? orderMap.get(char1) : Integer.MAX_VALUE;
+            int order2 = orderMap.containsKey(char2) ? orderMap.get(char2) : Integer.MAX_VALUE;
+
+            if (order1 != order2) {
+                return order1 - order2;
+            }
+        }
+
+        return word1.length() - word2.length();
+    }
+
+    /*
+     * mélange aléatoirement les mots de la liste
+     */
+    private static void shuffle(List<String> words) {
+        for (int i = words.size() - 1; i > 0; i--) {
+            int j = (int) (Math.random() * (i + 1));
+            swapWords(words, i, j);
+        }
+    }
+
+    /*
+     *Change les mots de position dans la liste
+     */
+    private static void swapWords(List<String> words, int i, int j) {
+        String temp = words.get(i);
+        words.set(i, words.get(j));
+        words.set(j, temp);
     }
 }
